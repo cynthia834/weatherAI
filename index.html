@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PharmaLens | openFDA Safety & Adverse Events Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- Top Glowing Orb Effects -->
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <header class="app-header">
+      <div class="header-container">
+        <div class="logo">
+          <span class="logo-icon">🧪</span>
+          <h1>Pharma<span class="gradient-text">Lens</span></h1>
+        </div>
+        <div class="badge">openFDA Live Data</div>
+      </div>
+    </header>
+
+    <main class="main-container">
+      <!-- Search Panel -->
+      <section class="search-section">
+        <div class="search-card">
+          <h2>Medication Safety & Analytics</h2>
+          <p class="subtitle">Search drug labels, active ingredients, warnings, recall histories, and real-time adverse events reported to the FDA.</p>
+          
+          <form id="search-form" class="search-form">
+            <div class="search-input-wrapper">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="search-input" placeholder="Search drug name (e.g., Aspirin, Ibuprofen, Metformin, Atorvastatin...)" autocomplete="off" required />
+              <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear search">&times;</button>
+            </div>
+            <button type="submit" class="btn-primary">Analyze</button>
+          </form>
+
+          <div class="quick-searches">
+            <span>Popular:</span>
+            <button type="button" class="quick-btn">Aspirin</button>
+            <button type="button" class="quick-btn">Ibuprofen</button>
+            <button type="button" class="quick-btn">Metformin</button>
+            <button type="button" class="quick-btn">Lipitor</button>
+            <button type="button" class="quick-btn">Amoxicillin</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Welcome / Hero Section -->
+      <section id="welcome-section" class="welcome-section">
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3>Safety Warnings</h3>
+            <p>Direct access to official FDA drug label warnings, dosage instructions, and critical safety precautions.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Adverse Event Reports</h3>
+            <p>Interactive visualizations of patient-reported side effects based on millions of openFDA records.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚠️</div>
+            <h3>Recall & Shortages</h3>
+            <p>Up-to-date recall enforcement notifications and current market shortage status directly from the FDA.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Loader Section -->
+      <section id="loader-section" class="loader-section hidden">
+        <div class="pulse-loader">
+          <div class="loader-circle"></div>
+          <p>Retrieving FDA registers and querying reports...</p>
+        </div>
+      </section>
+
+      <!-- Error Section -->
+      <section id="error-section" class="error-section hidden">
+        <div class="error-card">
+          <span class="error-icon">⚠️</span>
+          <h3 id="error-title">No Results Found</h3>
+          <p id="error-message">We couldn't locate any records matching that name. Double-check your spelling and try again.</p>
+        </div>
+      </section>
+
+      <!-- Dashboard Grid -->
+      <section id="dashboard-section" class="dashboard-section hidden">
+        <div class="dashboard-grid">
+          
+          <!-- Column 1: Drug Info -->
+          <div class="dashboard-col info-col">
+            <div class="card glass drug-main-card">
+              <div class="card-header">
+                <span class="card-category">FDA Drug Label</span>
+                <h2 id="drug-title" class="drug-name-header">Drug Name</h2>
+                <div class="active-ingredients" id="drug-ingredients">Active Ingredients</div>
+              </div>
+              
+              <div class="accordion">
+                <details class="accordion-item" open>
+                  <summary class="accordion-header">
+                    <span>📋 Purpose, Indications & Usage</span>
+                  </summary>
+                  <div class="accordion-content" id="drug-indications">
+                    No data available.
+                  </div>
+                </details>
+
+                <details class="accordion-item" open>
+                  <summary class="accordion-header warnings">
+                    <span>🚨 Boxed Warnings & Precautions</span>
+                  </summary>
+                  <div class="accordion-content highlight-warning" id="drug-warnings">
+                    No data available.
+                  </div>
+                </details>
+
+                <details class="accordion-item">
+                  <summary class="accordion-header">
+                    <span>💡 Dosage & Administration</span>
+                  </summary>
+                  <div class="accordion-content" id="drug-dosage">
+                    No data available.
+                  </div>
+                </details>
+
+                <details class="accordion-item">
+                  <summary class="accordion-header">
+                    <span>🔬 Inactive Ingredients</span>
+                  </summary>
+                  <div class="accordion-content" id="drug-inactive">
+                    No data available.
+                  </div>
+                </details>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Analytics & Recalls -->
+          <div class="dashboard-col analytics-col">
+            <!-- Stats overview -->
+            <div class="stats-row">
+              <div class="card glass stat-card">
+                <span class="stat-icon">📈</span>
+                <div class="stat-value" id="stat-total-events">0</div>
+                <div class="stat-label">Total FDA Event Reports</div>
+              </div>
+              <div class="card glass stat-card">
+                <span class="stat-icon">🔴</span>
+                <div class="stat-value" id="stat-serious-rate">0%</div>
+                <div class="stat-label">Serious Outcomes Rate</div>
+              </div>
+            </div>
+
+            <!-- Adverse events chart -->
+            <div class="card glass chart-card">
+              <h3>Top 10 Reported Side Effects (MedDRA PT)</h3>
+              <p class="chart-subtitle">Aggregated frequency from the latest patient event logs</p>
+              <div class="chart-wrapper">
+                <canvas id="reactions-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="two-charts-row">
+              <!-- Outcome breakdown -->
+              <div class="card glass chart-card half-card">
+                <h3>Reported Outcomes</h3>
+                <div class="chart-wrapper compact">
+                  <canvas id="outcomes-chart"></canvas>
+                </div>
+              </div>
+
+              <!-- Demographics (Patient Age) -->
+              <div class="card glass chart-card half-card">
+                <h3>Patient Age Distribution</h3>
+                <div class="chart-wrapper compact">
+                  <canvas id="age-chart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recalls and Shortages tabs -->
+            <div class="card glass tabs-card">
+              <div class="tabs-header">
+                <button type="button" class="tab-btn active" data-tab="recalls-tab">FDA Recalls & Enforcements</button>
+                <button type="button" class="tab-btn" data-tab="shortages-tab">Market Shortages</button>
+              </div>
+              <div class="tabs-content">
+                <div id="recalls-tab" class="tab-panel active">
+                  <div class="tab-panel-content" id="recalls-list">
+                    <p class="empty-list-message">No recall records found for this drug.</p>
+                  </div>
+                </div>
+                <div id="shortages-tab" class="tab-panel">
+                  <div class="tab-panel-content" id="shortages-list">
+                    <p class="empty-list-message">No shortage records found for this drug.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <div class="footer-container">
+        <p>PharmaLens incorporates data from openFDA, a service of the U.S. Food and Drug Administration (FDA).</p>
+        <p class="disclaimer">Disclaimer: This dashboard is for informational purposes and should not be used as medical advice or as a replacement for professional healthcare consultation.</p>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
